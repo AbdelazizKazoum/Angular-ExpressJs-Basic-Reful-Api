@@ -1,6 +1,7 @@
 const User = require("../models/user.js");
 const bcrypt = require("bcrypt");
 const user = require("../models/user");
+const jwt = require("jsonwebtoken");
 
 // Sign up
 exports.signUp = (req, res, next) => {
@@ -42,9 +43,13 @@ exports.login = (req, res, next) => {
               .json({ erroe: new Error("incorrect password") });
           }
 
+          const token = jwt.sign({ userId: user._id }, "RUNDOM_WEB_TOKEN", {
+            expiresIn: "24h",
+          });
+
           res.status(200).json({
             userId: user._id,
-            token: "token",
+            token: token,
           });
         })
         .catch((err) => {
